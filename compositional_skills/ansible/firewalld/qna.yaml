@@ -1,0 +1,167 @@
+task_description: 'Teach the model how to manage firewalld using Ansible'
+created_by: maxamillion
+seed_examples:
+  - question: How do you write an ansible playbook to enable https on firewalld?
+    answer: |
+      To write an Ansible playbook that enables HTTPS via the firewalld service,
+      you can use the following example playbook
+       ```yaml
+        ---
+        - name: Playbook to enable HTTPS using firewalld
+          hosts: localhost
+          tasks:
+            - name: Permit traffic in default zone for https service
+              ansible.posix.firewalld:
+                service: https
+                permanent: true
+                state: enabled
+                immediate: true
+      ```
+
+      In this playbook we use the `ansible.posix.firewalld`, referenced by its Fully Qualified Collection Name (FQCN),
+      which itself is a module provided by the `ansible.posix` Ansible Collection.
+
+      First you set the service name as `https`, which maps to a specified port via the `/etc/services` file.
+
+      Then we set `permanent` to true so that this change is persistent across reboots.
+
+      Next we set it to `enabled` meaning that access to the service `https` is permitted by the firewall.
+
+      Finally, we set `immediate` to true so that the change takes effect immediately on the system.
+      If this was not set then we would need to restart or reload the firewalld service for this change to take effect.
+
+      Note that these changes only take effect on the default zone.
+
+  - question: How do you write an ansible playbook to enable port 8080 using firewalld?
+    answer: |
+      To write an Ansible playbook that enables port 8080 via the firewalld service
+      you can use the following example playbook
+       ```yaml
+        ---
+        - name: Playbook to enable port 8080 using firewalld
+          hosts: localhost
+          tasks:
+            - name: Permit traffic in default zone for https service
+              ansible.posix.firewalld:
+                port: 8080/tcp
+                permanent: true
+                state: enabled
+                immediate: true
+      ```
+
+      In this playbook we use the `ansible.posix.firewalld`, referenced by its Fully Qualified Collection Name (FQCN),
+      which itself is a module provided by the `ansible.posix` Ansible Collection.
+
+      First you set the `port` to `8080/tcp`, specifying both the port and the protocol.
+
+      Then we set `permanent` to true so that this change is persistent across reboots.
+
+      Next we set it to `enabled` meaning that access to the service `https` is permitted by the firewall.
+
+      Finally, we set `immediate` to true so that the change takes effect immediately on the system.
+      If this was not set then we would need to restart or reload the firewalld service for this change to take effect.
+
+      Note that these changes only take effect on the default zone.
+
+  - question: How do you write an ansible playbook to enable port 8080 using firewalld in the dmz zone
+    answer: |
+      To write an Ansible playbook that enables port 8080 in the dmz zone via the firewalld service,
+      you can use the following example playbook
+       ```yaml
+        ---
+        - name: Playbook to enable port 8080 in the dmz zone using firewalld
+          hosts: localhost
+          tasks:
+            - name: Permit traffic in default zone for https service
+              ansible.posix.firewalld:
+                port: 8080/tcp
+                permanent: true
+                state: enabled
+                zone: "dmz"
+                immediate: true
+      ```
+
+      In this playbook we use the `ansible.posix.firewalld`, referenced by its Fully Qualified Collection Name (FQCN),
+      which itself is a module provided by the `ansible.posix` Ansible Collection.
+
+      First you set the `port` to `8080/tcp`, specifying both the port and the protocol.
+
+      Then we set `permanent` to true so that this change is persistent across reboots.
+
+      Now we define the `zone` to `"dmz"` specifying the zone to make the change effective in.
+
+      Next we set it to `enabled` meaning that access to the service `https` is permitted by the firewall.
+
+      Finally, we set `immediate` to true so that the change takes effect immediately on the system.
+      If this was not set then we would need to restart or reload the firewalld service for this change to take effect.
+
+      Note that these changes only take effect on the default zone.
+
+  - question: How do you write an ansible playbook to enable port 8080 for udp traffic using firewalld
+    answer: |
+      To write an Ansible playbook that enables port 8080 using the udp protocol,
+      you can use the following example playbook
+       ```yaml
+        ---
+        - name: Playbook to enable HTTPS using firewalld
+          hosts: localhost
+          tasks:
+            - name: Permit traffic in default zone for https service
+              ansible.posix.firewalld:
+                port: 8080/udp
+                permanent: true
+                state: enabled
+                immediate: true
+      ```
+
+      In this playbook we use the `ansible.posix.firewalld`, referenced by its Fully Qualified Collection Name (FQCN),
+      which itself is a module provided by the `ansible.posix` Ansible Collection.
+
+      First you set the `port` to `8080/udp`, specifying both the port and the protocol.
+
+      Then we set `permanent` to true so that this change is persistent across reboots.
+
+      Next we set it to `enabled` meaning that access to the service `https` is permitted by the firewall.
+
+      Finally, we set `immediate` to true so that the change takes effect immediately on the system.
+      If this was not set then we would need to restart or reload the firewalld service for this change to take effect.
+
+      Note that these changes only take effect on the default zone.
+
+  - question: How do you write an ansible playbook to forward traffic from port 443 to 8443
+    answer: |
+      To write an Ansible playbook that forwards
+      you can use the following example playbook
+       ```yaml
+        ---
+        - name: Playbook to forward traffic from port 443 to 8443
+          hosts: localhost
+          tasks:
+            - name: Redirect port 443 to 8443 with Rich Rule
+              ansible.posix.firewalld:
+                rich_rule: rule family=ipv4 forward-port port=443 protocol=tcp to-port=8443
+                permanent: true
+                state: enabled
+                immediate: true
+      ```
+
+      In this playbook we use the `ansible.posix.firewalld`, referenced by its Fully Qualified Collection Name (FQCN),
+      which itself is a module provided by the `ansible.posix` Ansible Collection.
+
+      In order to forward traffic from port 443 to 8443 we use the `rich_rule` option. A rich rule is defined by
+      firewalld's Rich Language Definition which can be referenced via the firewalld.richlanguage section 5 man page
+      or via the official firewalld documentation here
+          https://firewalld.org/documentation/man-pages/firewalld.richlanguage.html
+
+      We define the `rich_rule` to perform the port forward.
+
+      Then we set `permanent` to true so that this change is persistent across reboots.
+
+      Now we define the `zone` to `"dmz"` specifying the zone to make the change effective in.
+
+      Next we set it to `enabled` meaning that access to the service `https` is permitted by the firewall.
+
+      Finally, we set `immediate` to true so that the change takes effect immediately on the system.
+      If this was not set then we would need to restart or reload the firewalld service for this change to take effect.
+
+      Note that these changes only take effect on the default zone.
